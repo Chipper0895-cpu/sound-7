@@ -1,7 +1,7 @@
 package io.github.some_example_name;
 import javax.sound.sampled.*;
 
-public class Sound {
+public class Sound{
     private int SampleR;
     private double Fq;
     private double angle1;
@@ -47,5 +47,13 @@ public class Sound {
             sdl.close();
 
 
+    }
+
+    public double getAmp() {
+        return amp;
+    }
+
+    public void setAmp(double amp) {
+        this.amp = amp;
     }
 }
