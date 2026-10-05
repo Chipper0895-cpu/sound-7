@@ -16,7 +16,7 @@ public class Midi implements Runnable {
     private int pressedKey;
     String type;
     Boolean keyPress;
-    Sound sound = new Sound();
+    Sound sound = new Sound(440);
 
     public Midi() throws LineUnavailableException {
     }
@@ -69,7 +69,10 @@ public class Midi implements Runnable {
                             }
                             if (shortMessage.getCommand()!=128){
                                     try {
-                                        sound.samples((27.5 * (Math.pow(2, ((shortMessage.getData1() - 21) / 12.0)))));
+                                        sound.setFq((27.5 * (Math.pow(2, ((shortMessage.getData1() - 21) / 12.0)))));
+                                        sound.samples();
+                                        sound.setFq((27.5 * (Math.pow(2, ((shortMessage.getData1() - 24) / 12.0)))));
+                                        sound.samples();
                                         shortMessage.getChannel();
                                     } catch (LineUnavailableException e) {
                                         throw new RuntimeException(e);
@@ -84,7 +87,7 @@ public class Midi implements Runnable {
                     });
                     do {
                         try {
-                            Thread.sleep(100);
+                            Thread.sleep(10);
                         } catch (InterruptedException e) {
                             Thread.currentThread().interrupt();
                         }

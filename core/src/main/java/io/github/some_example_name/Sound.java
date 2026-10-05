@@ -1,9 +1,10 @@
 package io.github.some_example_name;
 import javax.sound.sampled.*;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class Sound{
     private int SampleR;
-    private double Fq;
+    private volatile double fq;
     private double angle1;
     private short[] samples;
     private short value;
@@ -12,19 +13,18 @@ public class Sound{
     AudioFormat af;
     SourceDataLine sdl;
 
-    public Sound() throws LineUnavailableException {
+    public Sound(double fq) throws LineUnavailableException {
         SampleR = 44100;
         af = new AudioFormat(SampleR, 16, 1, true, false);
         sdl = AudioSystem.getSourceDataLine(af);
         amp=0.5;
         samples = new short[44100];
         buffer = new byte[2];
-
+        this.fq = fq;
     }
 
 
-    public void samples(double fq) throws LineUnavailableException {
-        Fq = fq;
+    public void samples() throws LineUnavailableException {
 
         for (int i = 0; i < 4410; i++) {
             angle1 = ((2 * Math.PI * fq * i) / SampleR);
@@ -55,5 +55,13 @@ public class Sound{
 
     public void setAmp(double amp) {
         this.amp = amp;
+    }
+
+    public double getFq() {
+        return fq;
+    }
+
+    public void setFq(double fq) {
+        this.fq = fq;
     }
 }

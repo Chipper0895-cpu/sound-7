@@ -6,10 +6,8 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
-import jdk.jpackage.internal.Executor;
-import javax.sound.midi.MidiUnavailableException;
+
 import javax.sound.sampled.LineUnavailableException;
-import java.util.concurrent.Executors;
 
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
 public class Main extends ApplicationAdapter {
@@ -17,12 +15,13 @@ public class Main extends ApplicationAdapter {
     private Texture image;
     Sound sound;
     Midi midi;
-    Thread thread;
+    Thread Midithread;
+
 
     @Override
     public void create() {
         try {
-            sound = new Sound();
+            sound = new Sound(440);
         } catch (LineUnavailableException e) {
             throw new RuntimeException(e);
         }
@@ -31,7 +30,7 @@ public class Main extends ApplicationAdapter {
         } catch (LineUnavailableException e) {
             throw new RuntimeException(e);
         }
-        thread = new Thread(midi);
+        Midithread = new Thread(midi);
     }
 
     @Override
@@ -39,20 +38,21 @@ public class Main extends ApplicationAdapter {
         ScreenUtils.clear(0.15f, 0.15f, 0.2f, 1f);
         if (Gdx.input.isKeyPressed(Input.Keys.F)){
             try {
-                sound.samples(440);
+                sound.samples();
             } catch (LineUnavailableException e) {
             }
         }else{
             sound.close();
         }
-        if ((Gdx.input.isKeyPressed(Input.Keys.P))&&!thread.isAlive()){
+        if ((Gdx.input.isKeyPressed(Input.Keys.P))&&!Midithread.isAlive()){
             System.out.println("Loop started, press [ENTER] to escape.");
-            thread = new Thread(midi);
-            thread.start();
+            Midithread = new Thread(midi);
+            Midithread.start();
         }
-        if (thread.isAlive()&& Gdx.input.isKeyPressed(Input.Keys.ENTER)){
-            thread.interrupt();
+        if (Midithread.isAlive()&& Gdx.input.isKeyPressed(Input.Keys.ENTER)){
+            Midithread.interrupt();
         }
+
 
     }
 
