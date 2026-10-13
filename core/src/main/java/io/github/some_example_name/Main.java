@@ -23,7 +23,7 @@ public class Main extends ApplicationAdapter {
     @Override
     public void create() {
         try {
-            sound = new Sounds(440);
+            sound = new Sounds(17000);
         } catch (LineUnavailableException e) {
             throw new RuntimeException(e);
         }

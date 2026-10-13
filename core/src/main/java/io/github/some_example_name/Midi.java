@@ -18,6 +18,7 @@ public class Midi implements Runnable {
     Boolean keyPress;
     Sounds sound = new Sounds(440);
     Thread thread = new Thread(sound);
+    int command;
 
     public Midi() throws LineUnavailableException {
     }
@@ -63,14 +64,17 @@ public class Midi implements Runnable {
                     @Override
                     public void send(MidiMessage message, long timeStamp) {
                         ShortMessage shortMessage = (ShortMessage) message;
-                        if(shortMessage.getCommand()!=128 && !sound.alive){
+                        command=shortMessage.getCommand();
+                        if(command==144 && !sound.alive){
                             thread.start();
-                        } else if (shortMessage.getCommand()!=128) {
-                            sound.setFq((27.5 * (Math.pow(2, ((shortMessage.getData1() - 21) / 12.0)))));
-                        }
-                        if (shortMessage.getData1()==144){
+                        } else if (command==144) {
+                            System.out.println(sound.getFq());
+                            sound.play();
+
+                        }else if (command==128){
                             sound.stop();
                         }
+                        sound.setFq((27.5 * (Math.pow(2, ((shortMessage.getData1() - 21) / 12.0)))));
                         System.out.println("command = "+shortMessage.getCommand());
                         System.out.println("note type = "+shortMessage.getData1());
                         System.out.println("note velocity = "+shortMessage.getData2());
@@ -82,6 +86,7 @@ public class Midi implements Runnable {
                             sound.close();
                         }
                         sound.close();
+                        command=shortMessage.getCommand();
                     }
 
                     @Override
