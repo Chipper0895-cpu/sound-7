@@ -14,6 +14,7 @@ public class Sounds implements Runnable{
     volatile boolean audio;
     int index;
     volatile boolean alive;
+    boolean open = false;
 
 
     public Sounds(double Fq) throws LineUnavailableException {
@@ -36,24 +37,34 @@ public class Sounds implements Runnable{
         audio = true;
         try {
             open();
-            while (Thread.currentThread().isAlive()){
-            while (audio) {
-                angle1 += 2 * Math.PI * fq / SampleR;
-                value = (short) (amp * (Math.sin(angle1)) * Short.MAX_VALUE);
-                //saw wave, dodgy at high frequencies
-                //angle1 = ((2*Math.PI*fq*i)/SampleR);
-                //value = (short)(((angle1+Math.PI)/2-Math.floor((angle1+Math.PI)/2+1/2))*Short.MAX_VALUE*amp);
-                buffer[index++] = (byte) (value & 0xFF);
-                buffer[index++] = (byte) ((value >> 8) & 0xFF);
-                if (index == buffer.length) {
-                    sdl.write(buffer, 0, buffer.length);
-                    index = 0;
+        } catch (LineUnavailableException e) {
+            throw new RuntimeException(e);
+        }
+        while (Thread.currentThread().isAlive()) {
+            if(!open&&audio){
+                try {
+                    open();
+                } catch (LineUnavailableException e) {
+                    throw new RuntimeException(e);
                 }
             }
-
+            try {
+                while (audio) {
+                    angle1 += 2 * Math.PI * fq / SampleR;
+                    value = (short) (amp * (Math.sin(angle1)) * Short.MAX_VALUE);
+                    //saw wave, dodgy at high frequencies
+                    //angle1 = ((2*Math.PI*fq*i)/SampleR);
+                    //value = (short)(((angle1+Math.PI)/2-Math.floor((angle1+Math.PI)/2+1/2))*Short.MAX_VALUE*amp);
+                    buffer[index++] = (byte) (value & 0xFF);
+                    buffer[index++] = (byte) ((value >> 8) & 0xFF);
+                    if (index == buffer.length) {
+                        sdl.write(buffer, 0, buffer.length);
+                        index = 0;
+                    }
+                }
+            } catch (Exception e) {
+                throw new RuntimeException(e);
             }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
         }
     }
 
@@ -61,10 +72,12 @@ public class Sounds implements Runnable{
         sdl.drain();
         sdl.stop();
         sdl.close();
+        open = false;
     }
     public void open() throws LineUnavailableException {
         sdl.open(af);
         sdl.start();
+        open = true;
     }
 
     public void setFq(double fq){

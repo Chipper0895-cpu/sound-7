@@ -61,7 +61,5 @@ public class Main extends ApplicationAdapter {
 
     @Override
     public void dispose() {
-        Sthread.interrupt();
-        Mthread.interrupt();
     }
 }

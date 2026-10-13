@@ -65,10 +65,18 @@ public class Midi implements Runnable {
                         ShortMessage shortMessage = (ShortMessage) message;
                         if(shortMessage.getCommand()!=128 && !sound.alive){
                             thread.start();
-                        }
-                        if (shortMessage.getCommand()!=128){
+                        } else if (shortMessage.getCommand()!=128) {
                             sound.setFq((27.5 * (Math.pow(2, ((shortMessage.getData1() - 21) / 12.0)))));
                         }
+                        if (shortMessage.getData1()==144){
+                            sound.stop();
+                        }
+                        System.out.println("command = "+shortMessage.getCommand());
+                        System.out.println("note type = "+shortMessage.getData1());
+                        System.out.println("note velocity = "+shortMessage.getData2());
+                        System.out.println(" ");
+                        //ADD note on / note off info here
+
                         if(Gdx.input.isKeyJustPressed(Input.Keys.U)){
                             sound.stop();
                             sound.close();
