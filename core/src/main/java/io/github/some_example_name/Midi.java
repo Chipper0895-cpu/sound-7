@@ -63,14 +63,12 @@ public class Midi implements Runnable {
                     @Override
                     public void send(MidiMessage message, long timeStamp) {
                         ShortMessage shortMessage = (ShortMessage) message;
-                        if(shortMessage.getCommand()!=128 && !sound.alive){
+                        if(!sound.alive){
                             thread.start();
-                        } else if (shortMessage.getCommand()!=128) {
+                        }
                             sound.setFq((27.5 * (Math.pow(2, ((shortMessage.getData1() - 21) / 12.0)))));
-                        }
-                        if (shortMessage.getData1()==144){
-                            sound.stop();
-                        }
+                            sound.setAmp(Math.pow((shortMessage.getData2()/128.0),2));
+                            sound.play();
                         System.out.println("command = "+shortMessage.getCommand());
                         System.out.println("note type = "+shortMessage.getData1());
                         System.out.println("note velocity = "+shortMessage.getData2());

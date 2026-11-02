@@ -7,7 +7,7 @@ public class Sounds implements Runnable{
     private double angle1;
     private short[] samples;
     private short value;
-    private double amp;
+    private volatile double amp;
     private byte[] buffer;
     AudioFormat af;
     SourceDataLine sdl;
@@ -84,9 +84,12 @@ public class Sounds implements Runnable{
         this.fq = fq;
     }
 
+
     public double getAmp() {
         return amp;
     }
+
+    public void drain(){sdl.drain();}
 
     public void setAmp(double amp) {
         this.amp = amp;

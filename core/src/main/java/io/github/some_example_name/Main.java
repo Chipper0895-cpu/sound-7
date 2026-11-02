@@ -41,8 +41,12 @@ public class Main extends ApplicationAdapter {
         ScreenUtils.clear(0.15f, 0.15f, 0.2f, 1f);
         if (Gdx.input.isKeyPressed(Input.Keys.F)&&!Sthread.isAlive()){
             Sthread.start();
-        } else if (Gdx.input.isKeyPressed(Input.Keys.F)) {
+        }if (Gdx.input.isKeyPressed(Input.Keys.F)) {
             sound.play();
+            System.out.println("true");
+        }else{
+            sound.stop();
+            sound.drain();
         }
         if(Gdx.input.isKeyJustPressed(Input.Keys.U)){
             sound.stop();
