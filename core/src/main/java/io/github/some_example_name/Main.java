@@ -23,7 +23,7 @@ public class Main extends ApplicationAdapter {
     @Override
     public void create() {
         try {
-            sound = new Sounds(17000);
+            sound = new Sounds(440);
         } catch (LineUnavailableException e) {
             throw new RuntimeException(e);
         }
@@ -38,12 +38,10 @@ public class Main extends ApplicationAdapter {
 
     @Override
     public void render() {
-        ScreenUtils.clear(0.15f, 0.15f, 0.2f, 1f);
         if (Gdx.input.isKeyPressed(Input.Keys.F)&&!Sthread.isAlive()){
             Sthread.start();
         }if (Gdx.input.isKeyPressed(Input.Keys.F)) {
             sound.play();
-            System.out.println("true");
         }else{
             sound.stop();
             sound.drain();

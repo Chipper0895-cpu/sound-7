@@ -66,9 +66,12 @@ public class Midi implements Runnable {
                         if(!sound.alive){
                             thread.start();
                         }
+                            pressedKey = shortMessage.getData1();
                             sound.setFq((27.5 * (Math.pow(2, ((shortMessage.getData1() - 21) / 12.0)))));
-                            sound.setAmp(Math.pow((shortMessage.getData2()/128.0),2));
-                            sound.play();
+                            sound.setAmp((shortMessage.getData2())/128f);
+
+                        System.out.println(((27.5 * (Math.pow(2, ((shortMessage.getData1() - 21) / 12.0))))));
+
                         System.out.println("command = "+shortMessage.getCommand());
                         System.out.println("note type = "+shortMessage.getData1());
                         System.out.println("note velocity = "+shortMessage.getData2());
@@ -79,7 +82,6 @@ public class Midi implements Runnable {
                             sound.stop();
                             sound.close();
                         }
-                        sound.close();
                     }
 
                     @Override
