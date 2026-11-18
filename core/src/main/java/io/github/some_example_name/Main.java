@@ -18,7 +18,10 @@ public class Main extends ApplicationAdapter {
     Sounds sound;
     Midi midi;
     Thread Mthread;
-    Thread Sthread;
+    Thread Sthread1;
+    Thread Sthread2;
+    int frequency;
+    int tempnum;
 
     @Override
     public void create() {
@@ -33,14 +36,15 @@ public class Main extends ApplicationAdapter {
             throw new RuntimeException(e);
         }
         Mthread = new Thread(midi);
-        Sthread = new Thread(sound);
+        Sthread1 = new Thread(sound);
     }
 
     @Override
     public void render() {
-        if (Gdx.input.isKeyPressed(Input.Keys.F)&&!Sthread.isAlive()){
-            Sthread.start();
-        }if (Gdx.input.isKeyPressed(Input.Keys.F)) {
+        if (Gdx.input.isKeyPressed(Input.Keys.F)&&!Sthread1.isAlive()){
+            Sthread1.start();
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.F)) {
             sound.play();
         }else{
             sound.stop();
@@ -48,6 +52,7 @@ public class Main extends ApplicationAdapter {
         }
         if(Gdx.input.isKeyJustPressed(Input.Keys.U)){
             sound.stop();
+            sound.drain();
             sound.close();
         }
         if ((Gdx.input.isKeyPressed(Input.Keys.P))&&!Mthread.isAlive()){
@@ -58,7 +63,15 @@ public class Main extends ApplicationAdapter {
         if (Mthread.isAlive()&& Gdx.input.isKeyPressed(Input.Keys.ENTER)){
             Mthread.interrupt();
         }
+        if ((Gdx.input.isKeyJustPressed(Input.Keys.PAGE_UP))&&sound.getFq()<4200){
+            tempnum = (int)Math.round(((12*Math.log(sound.getFq()/27.5))/Math.log(2)));
+            sound.setFq(((27.5 * (Math.pow(2, ((tempnum+1) / 12.0))))));
 
+        }
+        if ((Gdx.input.isKeyJustPressed(Input.Keys.PAGE_DOWN)&&sound.getFq()>20)){
+            tempnum = (int)Math.round(((12*Math.log(sound.getFq()/27.5))/Math.log(2)));
+            sound.setFq(((27.5 * (Math.pow(2, ((tempnum-1) / 12.0))))));
+        }
     }
 
     @Override

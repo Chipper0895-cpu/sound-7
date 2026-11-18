@@ -7,6 +7,7 @@ public class Sounds implements Runnable{
     private double angle1;
     private short[] samples;
     private short value;
+    private double sum;
     private volatile double amp;
     private byte[] buffer;
     AudioFormat af;
@@ -15,6 +16,7 @@ public class Sounds implements Runnable{
     int index;
     volatile boolean alive;
     boolean open = false;
+
 
 
     public Sounds(double Fq) throws LineUnavailableException {
@@ -51,7 +53,13 @@ public class Sounds implements Runnable{
             try {
                 while (audio) {
                     angle1 += 2 * Math.PI * fq / SampleR;
-                    value = (short) (amp * (Math.sin(angle1)) * Short.MAX_VALUE);
+                    sum = 0;
+
+                    for (int i =1; i<300; i++){
+                        sum += ((Math.pow(-1f, i)) / i) * Math.sin(i * angle1);
+
+                    }
+                    value = (short)(((2*amp)/Math.PI)*sum * Short.MAX_VALUE);
                     //saw wave, dodgy at high frequencies
                     //angle1 = ((2*Math.PI*fq*i)/SampleR);
                     //value = (short)(((angle1+Math.PI)/2-Math.floor((angle1+Math.PI)/2+1/2))*Short.MAX_VALUE*amp);
