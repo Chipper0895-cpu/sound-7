@@ -4,11 +4,8 @@ import com.badlogic.gdx.Input;
 
 import javax.sound.midi.*;
 
-import javax.sound.midi.*;
 import javax.sound.sampled.LineUnavailableException;
-import java.util.NoSuchElementException;
 import java.util.Objects;
-import java.util.Scanner;
 
 public class Midi implements Runnable {
     MidiDevice sel = null;
@@ -59,21 +56,25 @@ public class Midi implements Runnable {
                 sel.open();
                 synthesizer.open();
                 Transmitter transmitter = sel.getTransmitter();
+                if(!sound.alive){
+                    thread.start();
+                }
                 transmitter.setReceiver(new Receiver() {
                     @Override
                     public void send(MidiMessage message, long timeStamp) {
                         ShortMessage shortMessage = (ShortMessage) message;
-                        if(!sound.alive){
-                            thread.start();
-                        }
-                        pressedKey = shortMessage.getData1();
-                        sound.setFq((27.5 * (Math.pow(2, ((shortMessage.getData1() - 21) / 12.0)))));
-                        sound.setAmp((shortMessage.getData2())/128f);
-                        //ADD note on / note off info here
+                        int command = shortMessage.getCommand();
+                        int note = shortMessage.getData1();
+                        int velocity = shortMessage.getData2();
 
-                        if(Gdx.input.isKeyJustPressed(Input.Keys.U)){
-                            sound.stop();
-                            sound.close();
+                        if (command == ShortMessage.NOTE_ON && velocity > 0) {
+                            pressedKey = note;
+                            sound.setFq(27.5 * Math.pow(2, (note - 21) / 12.0));
+                            sound.setAmp(velocity / 128f);
+                        } else if (command == ShortMessage.NOTE_OFF || (command == ShortMessage.NOTE_ON && velocity == 0)) {
+                            if (note == pressedKey) {
+                                sound.setAmp(0f);
+                            }
                         }
                     }
 
