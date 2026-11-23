@@ -6,6 +6,8 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
+import io.github.some_example_name.UI.RTable;
+
 import javax.sound.midi.MidiUnavailableException;
 import javax.sound.sampled.LineUnavailableException;
 import java.util.concurrent.Executors;
@@ -21,9 +23,11 @@ public class Main extends ApplicationAdapter {
     Thread Sthread2;
     int frequency;
     int tempnum;
+    RTable rTable;
 
     @Override
     public void create() {
+        rTable = new RTable();
         try {
             sound = new Sounds(440);
         } catch (LineUnavailableException e) {
@@ -40,10 +44,12 @@ public class Main extends ApplicationAdapter {
 
     @Override
     public void render() {
+        rTable.Draw();
         if (Gdx.input.isKeyPressed(Input.Keys.F)&&!Sthread1.isAlive()){
             Sthread1.start();
         }
         if (Gdx.input.isKeyPressed(Input.Keys.F)) {
+            sound.setAmp(0.5f);
             sound.play();
         }else{
             sound.stop();
@@ -55,7 +61,7 @@ public class Main extends ApplicationAdapter {
             sound.close();
         }
         if ((Gdx.input.isKeyPressed(Input.Keys.P))&&!Mthread.isAlive()){
-            System.out.println("Loop started, press [ENTER] to escape.");
+            System.out.println("Loop started");
             Mthread = new Thread(midi);
             Mthread.start();
         }
