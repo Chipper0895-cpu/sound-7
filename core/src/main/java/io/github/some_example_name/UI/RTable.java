@@ -16,7 +16,7 @@ public class RTable {
     private Button button;
     private TextButton textButton;
 
-    public RTable(){
+    public RTable() {
         Sskin = new Skin(Gdx.files.internal("skins/ShadeUI/uiskin.json"));
         Cskin = new Skin(Gdx.files.internal("skins/ChillUI/clean-crispy-ui.json"));
         stage = new Stage(new ScreenViewport());
@@ -24,19 +24,42 @@ public class RTable {
         root = new Table();
         root.setFillParent(true);
         stage.addActor(root);
-        pButton = new PButton(Sskin,Cskin);
-        tButton = new TButton(Sskin,Cskin);
+        pButton = new PButton(Sskin, Cskin);
+        tButton = new TButton(Sskin, Cskin);
 
-        textButton = tButton.CreateBlackButton("HI");
+        textButton = tButton.CreateBlackButton("MIDI");
         root.add(textButton).expand().pad(5).growX();
+        root.row();
         button = pButton.CreateWhiteButton();
         root.add(button).expand().pad(5).growX();
     }
 
-    public void Draw(){
-        Gdx.gl.glClearColor(.1f,.1f,.1f,1);
+    public void Draw() {
+        Gdx.gl.glClearColor(.1f, .1f, .1f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         stage.act();
         stage.draw();
+    }
+
+    public boolean IsButtonPressed() {
+        if (pButton.getWhite_button() != null) {
+            return pButton.isWpressed();
+        } else if (pButton.getBlack_button() != null) {
+            return pButton.isBpressed();
+        }else
+        return false;
+    }
+
+    public boolean IsWtoggled(){
+        if (tButton.getWhite_button()!=null){
+            return tButton.isWtoggled();
+        }else
+            return false;
+    }
+    public boolean IsBtoggled(){
+        if (tButton.getBlack_button()!=null){
+            return tButton.isBtoggled();
+        }else
+            return false;
     }
 }

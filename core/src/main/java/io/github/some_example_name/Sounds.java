@@ -59,7 +59,6 @@ public class Sounds implements Runnable{
             } else if (currentAmp > targetAmp) {
                 currentAmp = Math.max(targetAmp, currentAmp - AmpStep);
             }
-            wave="saw";
             switch (wave) {
 
                 case ("saw"):
@@ -169,5 +168,9 @@ public class Sounds implements Runnable{
 
     public double getFq() {
         return fq;
+    }
+
+    public void setWave(String wave) {
+        this.wave = wave;
     }
 }

@@ -6,6 +6,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
+import io.github.some_example_name.UI.PButton;
 import io.github.some_example_name.UI.RTable;
 
 import javax.sound.midi.MidiUnavailableException;
@@ -45,11 +46,11 @@ public class Main extends ApplicationAdapter {
     @Override
     public void render() {
         rTable.Draw();
-        if (Gdx.input.isKeyPressed(Input.Keys.F)&&!Sthread1.isAlive()){
+        if(rTable.IsButtonPressed()&&!Sthread1.isAlive()){
             Sthread1.start();
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.F)) {
+        } else if (rTable.IsButtonPressed()) {
             sound.setAmp(0.5f);
+            sound.setWave("sine");
             sound.play();
         }else{
             sound.stop();
@@ -60,11 +61,11 @@ public class Main extends ApplicationAdapter {
             sound.drain();
             sound.close();
         }
-        if ((Gdx.input.isKeyPressed(Input.Keys.P))&&!Mthread.isAlive()){
-            System.out.println("Loop started");
-            Mthread = new Thread(midi);
-            Mthread.start();
-        }
+        //if (((rTable.IsBtoggled()||rTable.IsWtoggled()))&&!Mthread.isAlive()){
+        //    System.out.println("Loop started");
+        //    Mthread = new Thread(midi);
+        //    Mthread.start();
+        //}
         if (Mthread.isAlive()&& Gdx.input.isKeyPressed(Input.Keys.ENTER)){
             Mthread.interrupt();
         }
